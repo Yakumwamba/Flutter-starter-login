@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -11,8 +12,13 @@ class ScreenProfile extends StatefulWidget {
 
 class _ScreenProfileState extends State<ScreenProfile> {
   final box = GetStorage();
+  final _key = GlobalKey<FormState>();
 
-  _logOut() {
+  void _validate() {
+    _key.currentState.validate();
+  }
+
+  void _logOut() {
     box.write("logged_in", "false");
 
     Get.back();
@@ -34,7 +40,7 @@ class _ScreenProfileState extends State<ScreenProfile> {
           automaticallyImplyLeading: false,
           title: Image.asset(
             "assets/images/logo_text.png",
-            height: 100,
+            height: 105,
             width: 100,
           ),
           leading: Builder(
@@ -58,7 +64,8 @@ class _ScreenProfileState extends State<ScreenProfile> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Flexible(
+                Expanded(
+                  
                   flex: 2,
                   child: Container(
                       padding: EdgeInsets.only(top: 10),
@@ -79,188 +86,230 @@ class _ScreenProfileState extends State<ScreenProfile> {
                             const Divider(
                               color: Colors.grey,
                               height: 0.5,
-                              
                               thickness: 1,
                             ),
                           ])),
                 ),
-                Flexible(
+                Expanded(
                   flex: 9,
                   child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Container(
+                    padding: EdgeInsets.all(20.0),
+                    child: Expanded(
+                      flex: 1,
+                                          child: Container(
+                       
+                          child: Form(
+                        key: _key,
                         child: Column(children: [
-                      Container(
-                        height: 70,
-                        child: Column(
-                          children: [
-                            Text("First Name",  style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold)),
-                            TextField(
-                              style: TextStyle(height: 0.3),
-                              decoration: InputDecoration(
-                                  hintText: box.read("first_name"),
-                                  border: new OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(15.0),
+                          Expanded(
+                            flex: 1,
+                                                      child: Container(
+                              height: 100,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("First Name",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
+                                  TextFormField(
+                                    validator:
+                                        ValidationBuilder().minLength(3).build(),
+                                    initialValue: box.read("first_name"),
+                                    style: TextStyle(height: 0.3),
+                                    decoration: InputDecoration(
+                                        hintText: box.read("first_name"),
+                                        border: new OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(
+                                            const Radius.circular(15.0),
+                                          ),
+                                        ),
+                                        labelText: "First Name"),
+                                    onChanged: (text) {
+                                      setState(() {});
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                                                      child: Container(
+                              height: 105,
+                              child: Column(
+                                children: [
+                                  Text("Last Name",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
+                                  TextFormField(
+                                    validator:
+                                        ValidationBuilder().minLength(3).build(),
+                                    style: TextStyle(height: 0.3),
+                                    initialValue: box.read("last_name"),
+                                    decoration: InputDecoration(
+                                      border: new OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(15.0),
+                                        ),
+                                      ),
+                                      labelText: "Last name",
                                     ),
+                                    onChanged: (text) {
+                                      setState(() {});
+                                    },
                                   ),
-                                  labelText: box.read("first_name")),
-                              onChanged: (text) {
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 70,
-                        child: Column(
-                          children: [
-                            Text("Last Name",  style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold)),
-                            TextField(
-                              style: TextStyle(height: 0.3),
-                              decoration: InputDecoration(
-                                hintText: box.read("last_name"),
-                                border: new OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                    const Radius.circular(15.0),
-                                  ),
-                                ),
-                                labelText: box.read("last_name"),
+                                ],
                               ),
-                              onChanged: (text) {
-                                setState(() {});
-                              },
                             ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 70,
-                        child: Column(
-                          children: [
-                            Text("email",  style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold)),
-                            TextField(
-                              style: TextStyle(height: 0.3),
-                              decoration: InputDecoration(
-                                hintText: box.read("email"),
-                                border: new OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                    const Radius.circular(15.0),
-                                  ),
-                                ),
-                              ),
-                              onChanged: (text) {
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        height: 70,
-                        child: Column(
-                          children: [
-                            Text(
-                              "Password",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                            TextField(
-                              style: TextStyle(height: 0.3),
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                  border: new OutlineInputBorder(
-                                    borderRadius: const BorderRadius.all(
-                                      const Radius.circular(15.0),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            
+                                                      child: Container(
+                              height: 105,
+                              child: Column(
+                                children: [
+                                  Text("email",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
+                                  TextFormField(
+                                    validator: ValidationBuilder().email().build(),
+                                    style: TextStyle(height: 0.3),
+                                    initialValue: box.read("email"),
+                                    decoration: InputDecoration(
+                                      labelText: "Email",
+                                      border: new OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(15.0),
+                                        ),
+                                      ),
                                     ),
+                                    onChanged: (text) {
+                                      setState(() {});
+                                    },
                                   ),
-                                  labelText: "Password"),
-                              onChanged: (text) {
-                                setState(() {});
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        height: 70,
-                        child: Column(
-                          children: [
-                            Text("Phone",  style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold)),
-                            TextField(
-                              style: TextStyle(height: 0.3),
-                              decoration: InputDecoration(
-                                hintText: box.read("phone"),
-                                border: new OutlineInputBorder(
-                                  borderRadius: const BorderRadius.all(
-                                    const Radius.circular(15.0),
-                                  ),
-                                ),
-                                labelText: box.read("phone"),
+                                ],
                               ),
-                              onChanged: (text) {
-                                setState(() {});
-                              },
                             ),
-                          ],
-                        ),
-                      ),
-                    ])),
+                          ),
+                          Expanded(
+                            flex: 1,
+                                                      child: Container(
+                              height: 105,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Password",
+                                    style: TextStyle(
+                                        fontSize: 15, fontWeight: FontWeight.bold),
+                                  ),
+                                  TextFormField(
+                                    validator:
+                                        ValidationBuilder().minLength(8).build(),
+                                    style: TextStyle(height: 0.3),
+                                    obscureText: true,
+                                    decoration: InputDecoration(
+                                        border: new OutlineInputBorder(
+                                          borderRadius: const BorderRadius.all(
+                                            const Radius.circular(15.0),
+                                          ),
+                                        ),
+                                        labelText: "Password"),
+                                    onChanged: (text) {
+                                      setState(() {});
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Expanded(
+                            flex: 1,
+                                                      child: Container(
+                              height: 100,
+                              child: Column(
+                                children: [
+                                  Text("Phone",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
+                                  TextFormField(
+                                    validator: ValidationBuilder().phone().build(),
+                                    style: TextStyle(height: 0.3),
+                                    initialValue:  box.read("phone") ,
+                                    decoration: InputDecoration(
+                                     
+                                      border: new OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(15.0),
+                                        ),
+                                      ),
+                                      labelText: "phone",
+                                    ),
+                                    onChanged: (text) {
+                                      setState(() {});
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ]),
+                      )),
+                    ),
                   ),
                 ),
-                Flexible(
-                  flex: 3,
-                  child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            RaisedButton(
-                              onPressed: () async {
-                                // Page route to Screen Profile
-                              },
-                              color: Color(0xffFE8137),
-                              child: Text(
-                                "Save Changes",
-                                style: TextStyle(color: Colors.white),
-                              ),
+                Container(
+                    padding: EdgeInsets.all(8),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          RaisedButton(
+                            onPressed: () async {
+                              // Page route to Screen Profile
+                              if (_key.currentState.validate()) {
+                                Get.snackbar("Successful", "Processing data");
+                              }
+                            },
+                            color: Color(0xffFE8137),
+                            child: Text(
+                              "Save Changes",
+                              style: TextStyle(color: Colors.white),
                             ),
-                            const Divider(
-                              color: Colors.grey,
-                              height: 0.5,
-                              thickness: 1,
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.logout,
-                                      size: 30,
-                                      color: Color(0xffFE8137),
-                                    ),
-                                    onPressed: null),
-                                SizedBox(width: 50),
-                                InkWell(
-                                    onTap: () {
-                                      Get.back();
-                                    },
-                                    child: Text(
-                                      "Log out",
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xffFE8137)),
-                                    ))
-                              ],
-                            )
-                          ])),
-                )
+                          ),
+                          const Divider(
+                            color: Colors.grey,
+                            height: 0.5,
+                            thickness: 1,
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                  icon: Icon(
+                                    Icons.logout,
+                                    size: 30,
+                                    color: Color(0xffFE8137),
+                                  ),
+                                  onPressed: null),
+                              SizedBox(width: 50),
+                              InkWell(
+                                  onTap: () {
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    "Log out",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xffFE8137)),
+                                  ))
+                            ],
+                          )
+                        ]))
               ],
             ),
           ),

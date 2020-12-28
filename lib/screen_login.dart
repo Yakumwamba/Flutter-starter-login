@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:form_validator/form_validator.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:trial_task_delivast/screen_profile.dart';
@@ -22,6 +23,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
   TextEditingController passwordController = TextEditingController();
   bool _loading = false;
   final box = GetStorage();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -115,85 +118,95 @@ class _ScreenLoginState extends State<ScreenLogin> {
     );
   }
 
-  Column _loginInputs() {
-    return Column(children: [
-      Center(
-          child: Text(
-        "Log in as Shopper or Driver",
-        style: TextStyle(
-            color: Color(
-              0xffFE8137,
+  _loginInputs() {
+    return Form(
+      key: _formKey,
+      child: Column(children: [
+        Center(
+            child: Text(
+          "Log in as Shopper or Driver",
+          style: TextStyle(
+              color: Color(
+                0xffFE8137,
+              ),
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
+        )),
+        SizedBox(height: 20),
+        TextFormField(
+         
+          validator: ValidationBuilder().email().required().build(),
+          decoration: InputDecoration(
+            border: new OutlineInputBorder(
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(15.0),
+              ),
             ),
-            fontSize: 20,
-            fontWeight: FontWeight.bold),
-      )),
-      SizedBox(height: 20),
-      TextField(
-        controller: emailController,
-        decoration: InputDecoration(
-          border: new OutlineInputBorder(
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(15.0),
-            ),
+            labelText: 'Email Address',
           ),
-          labelText: 'Email Address',
+          onChanged: (text) {
+            setState(() {
+              emailController.text = text;
+            });
+          },
         ),
-        onChanged: (text) {
-          setState(() {
-            emailController.text = text;
-          });
-        },
-      ),
-      SizedBox(height: 20),
-      TextField(
-        controller: emailController,
-        decoration: InputDecoration(
-          border: new OutlineInputBorder(
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(15.0),
+        SizedBox(height: 20),
+        TextFormField(
+         
+          validator: ValidationBuilder().minLength(8).required().build(),
+          decoration: InputDecoration(
+            border: new OutlineInputBorder(
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(15.0),
+              ),
             ),
+            labelText: 'Password',
           ),
-          labelText: 'Password',
+          onChanged: (text) {
+            setState(() {
+              emailController.text = text;
+            });
+          },
         ),
-        onChanged: (text) {
-          setState(() {
-            emailController.text = text;
-          });
-        },
-      ),
-      SizedBox(height: 20),
-      Container(
-          width: 120,
-          child: !_loading
-              ? RaisedButton(
-                  onPressed: () async {
-                    // Page route to Screen Profile
-                    setState(() {
-                      _loading = true;
-                    });
-                    _getUser().then((value) {
-                      setState(() {
-                        _loading = false;
-                      });
+        SizedBox(height: 20),
+        Container(
+            width: 120,
+            child: !_loading
+                ? RaisedButton(
+                    onPressed: () async {
+                      // Page route to Screen Profile
 
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ScreenProfile()),
-                      );
-                    });
-                  },
-                  color: Color(0xffFE8137),
-                  child: Text(
-                    "Log in",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
-              : Center(
-                  child: CircularProgressIndicator(
-                  backgroundColor: Color(0xffFE8137),
-                ))),
-    ]);
+                      if (_formKey.currentState.validate()) {
+                        setState(() {
+                          _loading = true;
+                        });
+                        _getUser().then((value) {
+                          setState(() {
+                            _loading = false;
+                          });
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ScreenProfile()),
+                          );
+                        });
+                      }else {
+                        Get.snackbar("Error", "Input error, try again");
+                      }
+                    },
+                    color: Color(0xffFE8137),
+                    child: Text(
+                      "Log in",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                : Center(
+                    child: CircularProgressIndicator(
+                    backgroundColor: Color(0xffFE8137),
+                  ))),
+      ]),
+    );
   }
 
   Future _getUser() async {
